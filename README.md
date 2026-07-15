@@ -3,8 +3,11 @@ A python-based script used to bypass iCloud Hello Activation on firmware version
 
 使用方法：
 Instruction:
+
 `` git clone https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
+
 对于中国用户：
+
 `` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
 
 # 中文
