@@ -1,6 +1,12 @@
 ## FuckSetupApp
 A python-based script used to bypass iCloud Hello Activation on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
+使用方法：
+Instruction:
+`` git clone https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
+对于中国用户：
+`` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
+
 # 中文
 
 一只基于python的iCloud激活锁绕过脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
@@ -9,14 +15,14 @@ A python-based script used to bypass iCloud Hello Activation on firmware version
 
 目前仅支持A11及以下
 
-本脚本不链接任何服务器，不需要注册ID，更不需要花钱，只需要下载到本地并运行fsa.sh即可完成绕过
+本脚本不链接任何服务器，不需要注册ID，更不需要花钱，只需要下载到本地并运行fsa即可完成绕过
 
 基于verygenericname的SSHRD_Script项目
 
 本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux的LiveCD来使用本脚本
 
 
-关于usbliter8的Boot ROM漏洞
+关于usbliter8的BootROM漏洞
 
 由于usbliter8漏洞的存在，只要可以获得A12/A13设备的ramdisk并引导，你甚至可以在A12+的设备上使用此脚本
 
@@ -24,7 +30,7 @@ A python-based script used to bypass iCloud Hello Activation on firmware version
 
 # 原理
 
-感谢setupapp大大在b站提供的绕ID思路，原视频在(https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd)，有能力的请一定去支持他！
+感谢setupapp大大在b站提供的绕ID思路，原视频在 https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd，有能力的请一定去支持他！
 
 1. 使用SSHRD_Script创建设备的ramdisk
    
