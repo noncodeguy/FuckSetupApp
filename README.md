@@ -9,7 +9,7 @@ A python-based script used to bypass iCloud Hello Activation on firmware version
 
 目前仅支持A11及以下
 
-本脚本不链接任何服务器，不需要注册ID，更不需要花钱，只需要下载到本地并运行bypass.py即可完成绕过
+本脚本不链接任何服务器，不需要注册ID，更不需要花钱，只需要下载到本地并运行fsa.sh即可完成绕过
 
 基于verygenericname的SSHRD_Script项目
 
@@ -50,7 +50,7 @@ A python-based iCloud Hello Activation Bypass script, supports firmware version 
 # Caution
 Currently supports only A11 an below
 
-This script will neither link to any servers, need registering ECID nor paying mulas, The only thing you need is to download it, tun the bypass.py to complete the bypass
+This script will neither link to any servers, need registering ECID nor paying mulas, The only thing you need is to download it, run the fsa.sh to complete the bypass
 
 Based on verygenericname's SSHRD_Script project
 
