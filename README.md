@@ -2,11 +2,12 @@
 A python-based script used to bypass iCloud Hello Activation on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 使用方法：
+
 Instruction:
 
 `` git clone https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
 
-对于中国用户：
+对于中国用户（使用GitHub镜像进行克隆）：
 
 `` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
 
@@ -18,7 +19,7 @@ Instruction:
 
 目前仅支持A11及以下
 
-本脚本不链接任何服务器，不需要注册ID，更不需要花钱，只需要下载到本地并运行fsa即可完成绕过
+本脚本不连接任何服务器，不需要注册ECID，更不需要花钱，只需要下载到本地并运行可执行文件fsa即可完成绕过
 
 基于verygenericname的SSHRD_Script项目
 
@@ -51,7 +52,7 @@ Instruction:
 
 # 绕后须知
 
-若是重命名系统快照，则刷机，升级或恢复rootFS则会再次跳激活。建议选择删除并重建系统快照，这样涉及到刷机和恢复rootFS等操作也不会跳激活锁，更彻底。
+若是重命名系统快照，则刷机，升级或恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到刷机和恢复rootFS等操作也不会跳激活锁，更彻底。
 
 # English
 A python-based iCloud Hello Activation Bypass script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
@@ -59,7 +60,7 @@ A python-based iCloud Hello Activation Bypass script, supports firmware version 
 # Caution
 Currently supports only A11 an below
 
-This script will neither link to any servers, need registering ECID nor paying mulas, The only thing you need is to download it, run the fsa.sh to complete the bypass
+This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the bypass
 
 Based on verygenericname's SSHRD_Script project
 
@@ -88,4 +89,4 @@ Thanks for "setupapp" at bilibili for providing the of bypass activation, origin
 7. Perfect-o.
 
 # Post-bypassing
-Only renaming the system snapshot will cause Hello Screen to appear again when you restore/upgrade/restore rootFS. I recommend deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
+Only renaming the system snapshot will cause Hello Screen to appear again when you restore/upgrade/restore rootFS. This script only contains commands deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
