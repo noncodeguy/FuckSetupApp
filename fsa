@@ -1,0 +1,97 @@
+# 盘点那些库克瞬间绷不住了的瞬间
+echo " _____  _   _  ____  _   _  _____ _____  _____  _   _  _____    _    _____  _____"
+echo "|  ___|| | | |/  __|| | / //  __/| ____||__ __|| | | |/  _  \  / \  /  _  \/  _  \ "
+echo "| |___ | | | || /   | |/ / | |__ | |___   | |  | | | || |_| | / . \ | |_| || |_| |"
+echo "|  ___|| | | || |   |   |  \__  \|  ___|  | |  | | | || ____/| /_\ || ____/| ____/"
+echo "| |    | |_| || \__ | |\ \ ___| || |___   | |  | |_| || |    | | | || |    | |"
+echo "|_|    \_____/\____||_| \_|\____/|_____|  |_|  \_____/|_|    |_| |_||_|    |_|"
+cd ./sshrd
+VERSION=$(./ideviceinfo -k ProductVersion)
+echo "--------------------------------------------------------------------------------"
+echo "### If the script is jammed, try pressing 1-2 times of Enter key ###"
+echo "### If script says 'ERROR: No device found!', then replug your device, unlock and hit trust, enter passcode and press Ctrl + C to restart"
+echo "--------------------------------------------------------------------------------"
+echo "IF YOUR SOFTWARE VERSION IS ABOVE iOS 9,"
+echo "THIS SCRIPT WILL ERASE ALL DATA TO REMOVE YOUR ACTIVATION LOCK."
+echo "PLEASE THINK TWICE BEFORE PROCEEDING. NO WARRANTY WILL PROVIDED."
+echo "--------------------------------------------------------------------------------"
+echo "You can use './sshrd.sh [your iOS version]', './sshrd.sh boot', './sshrd.sh ssh'"
+echo "to look for specific files in your filesystem. That can recover some files."
+echo "--------------------------------------------------------------------------------"
+sleep 10
+echo "Please set your device into DFU mode."
+echo "If you don't know how to get to DFU mode, google it"
+echo "Press Enter when done"
+read -s
+echo "Please wait for the ramdisk is extracted"
+sleep 3
+./sshrd.sh "$VERSION" 
+echo "Now your ramdisk is successfully extracted. Please wait for booting and ssh-ing..."
+sleep 3
+./sshrd.sh boot
+
+REMOTE_COMMANDS-""
+ver_ge() {
+    local sorted
+    sorted=$(printf '%s\n' "$1" "$2" | sort -V | head -n1)
+    [[ "$sorted" == "$2" ]]
+}
+ver_le() {
+    local sorted
+    sorted=$(printf '%s\n' "$1" "$2" | sort -V | head -n1)
+    [[ "$sorted" == "$1" ]]
+}
+
+if ver_ge "$VERSION" "6.0" && ver_le "$VERSION" "9.3.6"; then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_hfs /dev/disk0s1s1
+        echo 'Deleting setup.app...'
+        rm -rf /mnt1/Applications/Setup.app
+        echo 'Rebooting...'
+        /sbin/reboot
+    "
+elif ver_ge "$VERSION" "10.0" && ver_le "$VERSION" "10.2.1"; then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_hfs /dev/disk0s1s1
+        echo 'Deleting setup.app'
+        rm -rf /mnt1/Application/Setup.app
+        echo 'Erasing device...'
+        /usr/sbin/nvram oblit-inprogress-5
+    "
+elif ver_ge "$VERSION" "10.3.1" && ver_le "$VERSION" "11.2.6"; then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_apfs /dev/disk0s1s1
+        echo 'Deleting setup.app'
+        rm -rf /mnt1/Application/Setup.app
+        echo 'Erasing device...'
+        /usr/sbin/nvram oblit-inprogress-5
+    "
+elif ( ver_ge "$VERSION" "11.3" && ver_le "$VERSION" "12.4.4" ) || ( ver_ge "$VERSION" "13.0" && ver_le "$VERSION" "13.2.3" ); then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_apfs /dev/disk0s1s1
+        echo 'Deleting setup.app'
+        rm -rf /mnt1/Application/Setup.app
+        echo 'Finding and rebuilding system snapshot...'
+        output=\$(snaputil -l /mnt1)
+        snaputil -d \"\$output\" /mnt1
+        snaputil -c \"\$output\" /mnt1
+        echo 'Erasing device...'
+        /usr/sbin/nvram oblit-inprogress-5
+    "
+else
+    echo 'Unsupported system version. READ THE README smartahh'
+    exit 0
+fi
+killall ./Darwin/iproxy 2>/dev/null | true
+./Darwin/iproxy 2222 22 &>/dev/null &
+sleep 1
+./sshpass -p 'alpine' ssh -o StrictHostKeyChecking=no -p2222 root@localhost << 'EOF'
+    echo "About to perform Setup.app Elimination..."
+    $REMOTE_COMMANDS
+EOF
+
+killall iproxy 2>/dev/null | true
