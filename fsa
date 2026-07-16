@@ -1,0 +1,188 @@
+cd ./sshrd || { echo "oops I think GitHub ate your sshrd directory"; exit 1; }
+OS=$(uname -s)
+case "$OS" in
+    Darwin) BIN_DIR="./Darwin" ;;
+    Linux)  BIN_DIR="./Linux" ;;
+    *)      echo "i said no windows dud"; exit 1 ;;
+esac
+
+if [[ ! -x "$BIN_DIR/iproxy" ]]; then
+    echo "where is iproxy?"
+    exit 1
+fi
+if [[ ! -x "$BIN_DIR/sshpass" ]]; then
+    echo "where is sshpass?"
+    exit 1
+fi
+killall iproxy 2>/dev/null | true
+echo " ____  _   _  ____  _   _  _____ ____  _____  _   _  _____    _    ____   ____"
+echo "|  __|| | | |/  __|| | / //  __/| ___||__ __|| | | |/  _  \  / \  /  _ \ /  _ \ " 
+echo "| |__ | | | || /   | |/ / | |__ | |__   | |  | | | || |_| | / . \ | |_| || |_| |"
+echo "|  __|| | | || |   |   |  \__  \|  __|  | |  | | | || ____/| /_\ || ___/ | ___/"
+echo "| |   | |_| || \__ | |\ \ ___| || |__   | |  | |_| || |    | | | || |    | |"
+echo "|_|   \_____/\____||_| \_|\____/|____|  |_|  \_____/|_|    |_| |_||_|    |_|"
+echo "--------------------------------------------------------------------------------"
+echo "### If the script is jammed, try pressing 1-2 times of Enter key ###"
+echo "### If the script reports 'Where's the device?' and exit ###"
+echo "### Then try reconnecting, unlocking your device and hit trust ###"
+echo "--------------------------------------------------------------------------------"
+echo "IF YOUR SOFTWARE VERSION IS ABOVE iOS 9,"
+echo "THIS SCRIPT WILL ERASE ALL DATA TO REMOVE YOUR ACTIVATION LOCK."
+echo "PLEASE THINK TWICE BEFORE PROCEEDING. YOU CAN ALSO PRESS CTRL + C TO EXIT."
+echo "--------------------------------------------------------------------------------"
+echo "You can use './sshrd.sh [your iOS version]', './sshrd.sh boot', './sshrd.sh ssh'"
+echo "to look for specific files in your filesystem. That can recover some files."
+echo "--------------------------------------------------------------------------------"
+sleep 30
+echo "Checking iOS Version..."
+sleep 5
+VERSION=$(./ideviceinfo -k ProductVersion 2>&1)
+if [[ -z "$VERSION" ]]; then
+    echo "Where's the device?"
+    exit 1
+elif [[ "$VERSION" == *"ERROR: No device found!"* ]]; then
+    echo "Where's the device?"
+    exit 1
+elif [[ "$VERSION" == *"ERROR: Could not connect to lockdownd: Mux error"* ]]; then
+    echo "Are you in Recovery or DFU Mode? Exit plz"
+    exit 1
+else
+    echo "Found iOS version $VERSION, Loading DFU Mode tutorial..."
+fi
+sleep 3
+echo "                                                                                "
+echo "|------------------------------------------------------------------------------|"
+echo "|                              DFU Mode Tutorial                               |"       
+echo "|------------------------------------------------------------------------------|"
+echo "|                                                                              |"
+echo "| 1. All Devices w/ Home button (except iPhone 7/8 & iPhone SE 2/3)            |"
+echo "| Step 1. Press Home button + Power Button 10s                                 |"
+echo "| Step 2. Release Power button, Hold Home button for 10s                       |"
+echo "|                                                                              |"
+echo "|------------------------------------------------------------------------------|"
+echo "|                                                                              |"
+echo "| 2. All Devices Using FaceID (no Home button) + iPhone 8(Plus) & SE 2/3       |"
+echo "| Step 1. Press Volume Up then Volume Down quickly, then hold Power Button     |"
+echo "| Step 2. Hold until screen goes black, then hold Power + Volume Down for 10s  |"
+echo "| Step 3. Release Power button, hold Volume Down button for 10s                |"
+echo "|                                                                              |"
+echo "|------------------------------------------------------------------------------|"
+echo "|                                                                              |"
+echo "| 3. iPhone 7 (Plus)                                                           |"
+echo "| Step 1. Press Home button + Volume Down button 10s                           |"
+echo "| Step 2. Release Power button, hold Volume Down button for 10s                |"
+echo "|                                                                              |"
+echo "|______________________________________________________________________________|"
+echo "Please set your device into DFU mode, and press Enter when done."
+read -s 
+echo "THIS SCRIPT WILL ERASE ALL DATA ON THIS DEVICE, AND IT WLL NEVER BE RECOVERED!"
+echo "Press Enter to proceed."
+echo "Please wait for ramdisk to be extracted..."
+echo "If the script got stuck, try press Enter for 1 time"
+./sshrd.sh "$VERSION"
+if [[ $? -ne 0 ]]; then
+    echo "ou shii extract failed"
+    exit 1
+fi
+echo "Extraction completed! Booting ramdisk..."
+echo "If the script got stuck, try press Enter for 1 time"
+sleep 2
+./sshrd.sh boot
+if [[ $? -ne 0 ]]; then
+    echo "ou shii boot failed"
+    exit 1
+fi
+echo "Stuck again? Press Enter 1 time"
+sleep 20
+
+ver_ge() {
+    local sorted
+    sorted=$(printf '%s\n' "$1" "$2" | sort -V | head -n1)
+    [[ "$sorted" == "$2" ]]
+}
+ver_le() {
+    local sorted
+    sorted=$(printf '%s\n' "$1" "$2" | sort -V | head -n1)
+    [[ "$sorted" == "$1" ]]
+}
+
+REMOTE_SCRIPT=""
+
+if ver_ge "$VERSION" "6.0" && ver_le "$VERSION" "9.3.6"; then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_hfs /dev/disk0s1s1
+        echo 'Deleting setup.app...'
+        rm -rf /mnt1/Applications/Setup.app
+        echo 'Rebooting...'
+        /sbin/reboot
+    "
+elif ver_ge "$VERSION" "10.0" && ver_le "$VERSION" "10.2.1"; then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_hfs /dev/disk0s1s1
+        echo 'Deleting setup.app'
+        rm -rf /mnt1/Application/Setup.app
+        echo 'Erasing device...bye bye data'
+        /usr/sbin/nvram oblit-inprogress-5
+    "
+elif ver_ge "$VERSION" "10.3" && ver_le "$VERSION" "11.2.6"; then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_apfs /dev/disk0s1s1
+        echo 'Deleting setup.app'
+        rm -rf /mnt1/Application/Setup.app
+        echo 'Erasing device...bye bye data'
+        /usr/sbin/nvram oblit-inprogress-5
+    "
+elif ( ver_ge "$VERSION" "11.3" && ver_le "$VERSION" "12.4.4" ) || ( ver_ge "$VERSION" "13.0" && ver_le "$VERSION" "13.2.3" ); then
+    REMOTE_SCRIPT="
+        echo 'Mounting filesystem...'
+        mount_apfs /dev/disk0s1s1
+        echo 'Deleting setup.app'
+        rm -rf /mnt1/Application/Setup.app
+        echo 'Finding and rebuilding system snapshot...'
+        snapname=\$(snaputil -l /mnt1)
+        snaputil -d \"\$snapname\" /mnt1
+        snaputil -c \"\$snapname\" /mnt1
+        echo 'Erasing device...bye bye data'
+        /usr/sbin/nvram oblit-inprogress-5
+    "
+else
+    REMOTE_SCRIPT="
+        echo 'Unsupported system version. READ THE README smartahh'
+        /sbin/reboot
+        exit 0
+    "
+fi
+
+killall iproxy 2>/dev/null | true
+"$BIN_DIR/iproxy" 2222 22 >/dev/null 2>&1 &
+IPROXY_PID=$!
+
+for i in {1..10}; do
+    if nc -z localhost 2222 2>/dev/null; then
+        break
+    fi
+    sleep 1
+    if ! kill -0 $IPROXY_PID 2>/dev/null; then
+        echo "where is iproxy?"
+        exit 1
+    fi
+    sleep 1
+    if [[ $i -eq 10 ]]; then
+        echo "iproxy hate you"
+        kill $IPROXY_PID 2>/dev/null
+        exit 1
+    fi
+done
+killall $BIN_DIR/iproxy 2>/dev/null | true
+$BIN_DIR/iproxy 2222 22 &>/dev/null 2>&1 &
+sleep 3
+$BIN_DIR/sshpass -p 'alpine' ssh -T -o StrictHostKeyChecking=no -p2222 root@localhost << EOF
+    echo "About to perform Setup.app Elimination..."
+    $REMOTE_SCRIPT
+EOF
+
+kill $IPROXY_PID 2>/dev/null
+cd ..
