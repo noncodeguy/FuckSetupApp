@@ -1,5 +1,5 @@
 ## FuckSetupApp
-A python-based script used to bypass iCloud Hello Activation on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
+A shell script used to bypass iCloud Hello Activation on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 使用方法：
 
@@ -13,7 +13,7 @@ Instruction:
 
 # 中文
 
-一只基于python的iCloud激活锁绕过脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
+一只iCloud激活锁绕过shell脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
 
 # 注意
 
@@ -23,7 +23,7 @@ Instruction:
 
 基于verygenericname的SSHRD_Script项目
 
-本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux的LiveCD来使用本脚本
+本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux Mint/Ubuntu的LiveCD来使用本脚本
 
 
 关于usbliter8的BootROM漏洞
@@ -31,6 +31,7 @@ Instruction:
 由于usbliter8漏洞的存在，只要可以获得A12/A13设备的ramdisk并引导，你甚至可以在A12+的设备上使用此脚本
 
 但是由于usbliter8目前漏洞利用并不成熟且需要开发板（30元），所以暂不适配
+关于设备iPhone XR的ramdisk，可以看这里 (github.com/hsbugss/usbliter8-xr-ramdisk)
 
 # 原理
 
@@ -55,7 +56,7 @@ Instruction:
 若是重命名系统快照，则刷机，升级或恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到刷机和恢复rootFS等操作也不会跳激活锁，更彻底。
 
 # English
-A python-based iCloud Hello Activation Bypass script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
+An iCloud Hello Activation Bypass shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 # Caution
 Currently supports only A11 an below
@@ -64,12 +65,14 @@ This script will neither connect to any servers, requires registering ECID nor p
 
 Based on verygenericname's SSHRD_Script project
 
-Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux's LiveCD to use this script
+Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
 
 # About the usbliter8 BootROM PoC
 Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
 
 But the exploit is still in early development and needs a Waveshare / Raspberry Pi board, so currently there will be no support for A12+
+
+About iPhone XR's ramdisk, check out this repository (github.com/hsbugss/usbliter8-xr-ramdisk)
 
 # The Principle
 Thanks for "setupapp" at bilibili for providing the of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
