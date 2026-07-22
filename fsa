@@ -124,7 +124,7 @@ elif ver_ge "$VERSION" "10.0" && ver_le "$VERSION" "10.2.1"; then
         echo 'Deleting setup.app'
         rm -rf /mnt1/Application/Setup.app
         echo 'Erasing device...bye bye data'
-        /usr/sbin/nvram oblit-inprogress-5
+        /usr/sbin/nvram oblit-inprogress=5
     "
 elif ver_ge "$VERSION" "10.3" && ver_le "$VERSION" "11.2.6"; then
     REMOTE_SCRIPT="
@@ -133,7 +133,7 @@ elif ver_ge "$VERSION" "10.3" && ver_le "$VERSION" "11.2.6"; then
         echo 'Deleting setup.app'
         rm -rf /mnt1/Application/Setup.app
         echo 'Erasing device...bye bye data'
-        /usr/sbin/nvram oblit-inprogress-5
+        /usr/sbin/nvram oblit-inprogress=5
     "
 elif ( ver_ge "$VERSION" "11.3" && ver_le "$VERSION" "12.4.4" ) || ( ver_ge "$VERSION" "13.0" && ver_le "$VERSION" "13.2.3" ); then
     REMOTE_SCRIPT="
@@ -146,7 +146,7 @@ elif ( ver_ge "$VERSION" "11.3" && ver_le "$VERSION" "12.4.4" ) || ( ver_ge "$VE
         snaputil -d \"\$snapname\" /mnt1
         snaputil -c \"\$snapname\" /mnt1
         echo 'Erasing device...bye bye data'
-        /usr/sbin/nvram oblit-inprogress-5
+        /usr/sbin/nvram oblit-inprogress=5
     "
 else
     REMOTE_SCRIPT="
