@@ -1,19 +1,11 @@
-cd ./sshrd || { echo "oops I think GitHub ate your sshrd directory"; exit 1; }
+cd ./sshrd || { echo "Did you just double-clicked the executable? Plz cd into your 'FuckSetupApp' directory and run './fsa' manually. DON'T BE LAZY!"; exit 1; }
 OS=$(uname -s)
 case "$OS" in
     Darwin) BIN_DIR="./Darwin" ;;
     Linux)  BIN_DIR="./Linux" ;;
-    *)      echo "i said no windows dud"; exit 1 ;;
+    *)      echo "i said no windows dud, are you using Git Bash?"; exit 1 ;;
 esac
 
-if [[ ! -x "$BIN_DIR/iproxy" ]]; then
-    echo "where is iproxy?"
-    exit 1
-fi
-if [[ ! -x "$BIN_DIR/sshpass" ]]; then
-    echo "where is sshpass?"
-    exit 1
-fi
 killall iproxy 2>/dev/null | true
 echo " ____  _   _  ____  _   _  _____ ____  _____  _   _  _____    _    ____   ____"
 echo "|  __|| | | |/  __|| | / //  __/| ___||__ __|| | | |/  _  \  / \  /  _ \ /  _ \ " 
@@ -29,19 +21,20 @@ echo "--------------------------------------------------------------------------
 echo "IF YOUR SOFTWARE VERSION IS ABOVE iOS 9,"
 echo "THIS SCRIPT WILL ERASE ALL DATA TO REMOVE YOUR ACTIVATION LOCK."
 echo "PLEASE THINK TWICE BEFORE PROCEEDING. YOU CAN ALSO PRESS CTRL + C TO EXIT."
+echo "You can learn how to use SSHRD_Script to extract the files in your device"
 echo "--------------------------------------------------------------------------------"
-echo "You can use './sshrd.sh [your iOS version]', './sshrd.sh boot', './sshrd.sh ssh'"
-echo "to look for specific files in your filesystem. That can recover some files."
+echo "This script only supports 6.0 - 12.4.4 and 13.0 - 13.2.3"
+echo "If you're not on that version, bye bye then"
 echo "--------------------------------------------------------------------------------"
 sleep 30
 echo "Checking iOS Version..."
 sleep 5
-VERSION=$(./ideviceinfo -k ProductVersion 2>&1)
+VERSION=$($BIN_DIR/ideviceinfo -k ProductVersion 2>&1)
 if [[ -z "$VERSION" ]]; then
     echo "Where's the device?"
     exit 1
 elif [[ "$VERSION" == *"ERROR: No device found!"* ]]; then
-    echo "Where's the device?"
+    echo "Where's the device? Or...you're in recovery/DFU mode? Exit plz"
     exit 1
 elif [[ "$VERSION" == *"ERROR: Could not connect to lockdownd: Mux error"* ]]; then
     echo "Are you in Recovery or DFU Mode? Exit plz"
@@ -50,35 +43,60 @@ else
     echo "Found iOS version $VERSION, Loading DFU Mode tutorial..."
 fi
 sleep 3
-echo "                                                                                "
-echo "|------------------------------------------------------------------------------|"
-echo "|                              DFU Mode Tutorial                               |"       
-echo "|------------------------------------------------------------------------------|"
-echo "|                                                                              |"
-echo "| 1. All Devices w/ Home button (except iPhone 7/8 & iPhone SE 2/3)            |"
-echo "| Step 1. Press Home button + Power Button 10s                                 |"
-echo "| Step 2. Release Power button, Hold Home button for 10s                       |"
-echo "|                                                                              |"
-echo "|------------------------------------------------------------------------------|"
-echo "|                                                                              |"
-echo "| 2. All Devices Using FaceID (no Home button) + iPhone 8(Plus) & SE 2/3       |"
-echo "| Step 1. Press Volume Up then Volume Down quickly, then hold Power Button     |"
-echo "| Step 2. Hold until screen goes black, then hold Power + Volume Down for 10s  |"
-echo "| Step 3. Release Power button, hold Volume Down button for 10s                |"
-echo "|                                                                              |"
-echo "|------------------------------------------------------------------------------|"
-echo "|                                                                              |"
-echo "| 3. iPhone 7 (Plus)                                                           |"
-echo "| Step 1. Press Home button + Volume Down button 10s                           |"
-echo "| Step 2. Release Power button, hold Volume Down button for 10s                |"
-echo "|                                                                              |"
-echo "|______________________________________________________________________________|"
-echo "Please set your device into DFU mode, and press Enter when done."
+echo "Now set your device to DFU mode."
+sleep 1
+echo "btw, are you using iPhone 7/8 or X?"
+echo "If you're using iPhone 7/8/X, type '2'."
+echo "If you're using any device besides these, (I mean All iPhones, iPads and iPod Touches using A11 and below), type '1'."
+read -p "Input number here: " wow
+if [[ $wow = 1 ]]; then 
+    echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
+    sleep 5
+    echo "Entering recovery mode..."
+    export UCID=$($BIN_DIR/ideviceinfo -k UniqueDeviceID)
+    $BIN_DIR/ideviceenterrecovery $UCID
+    sleep 3
+    echo "You need to press home button + power button for 4s,"
+    echo "Then release power button, hold home button for 10s"
+    echo "Press Enter when ready, the guide will start after pressing Enter"
+    read -s
+    echo "Get prepared..." 
+    echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
+    echo "Press Power & Home button" 
+    echo "4" && sleep 1 && echo "3" && sleep 1 && $BIN_DIR/irecovery -n && echo "2" && sleep 1 && echo "1" && sleep 1
+    echo "Release Power button, hold home button"
+    echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
+elif [[ $wow = 2 ]]; then
+    echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
+    sleep 5
+    echo "Entering recovery mode..."
+    export UCID=$($BIN_DIR/ideviceinfo -k UniqueDeviceID) 
+    $BIN_DIR/ideviceenterrecovery $UCID 
+    sleep 3
+    echo "You need to press Volume Down button + power button for 4s,"
+    echo "Then release power button, hold Volume Down button for 10s"
+    echo "Press Enter when ready, the guide will start after pressing Enter"
+    read -s
+    echo "Get prepared..." 
+    echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
+    echo "Press Power & Volume Down button" 
+    echo "4" && sleep 1 && echo "3" && sleep 1 && $BIN_DIR/irecovery -n && echo "2" && sleep 1 && echo "1" && sleep 1
+    echo "Release Power button, hold Volume Down button"
+    echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
+else
+    echo "I said 1 or 2 dude"
+    echo "And now we're starting this all over!"
+    sleep 2
+    exit 1
+fi
+echo "Now your device should be in DFU mode...hopefully."
+echo "If not, Press Ctrl + C restart the script and do it again. sry"
 read -s 
 echo "THIS SCRIPT WILL ERASE ALL DATA ON THIS DEVICE, AND IT WLL NEVER BE RECOVERED!"
 echo "Press Enter to proceed."
 echo "Please wait for ramdisk to be extracted..."
 echo "If the script got stuck, try press Enter for 1 time"
+echo "This could happen when you run this script for the second time"
 ./sshrd.sh "$VERSION"
 if [[ $? -ne 0 ]]; then
     echo "ou shii extract failed"
@@ -183,6 +201,7 @@ $BIN_DIR/sshpass -p 'alpine' ssh -T -o StrictHostKeyChecking=no -p2222 root@loca
     echo "About to perform Setup.app Elimination..."
     $REMOTE_SCRIPT
 EOF
-
+echo "Now your device should bypassed the activation lock...hopefully."
+echo "Remember, you can't sideload apps, log in iCloud
 kill $IPROXY_PID 2>/dev/null
 cd ..
