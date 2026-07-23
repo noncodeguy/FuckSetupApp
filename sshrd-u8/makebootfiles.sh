@@ -132,7 +132,7 @@ if [[ "$USEROPTION" == ramdisk ]]; then
 else
 :
 fi
-filedir="$boardconfig-$version-$buildid-$USEROPTION"
+filedir="$boardconfig-$deviceid"
 mkdir -p bootchain/"$filedir"
 if [[ "$USEROPTION" == ramdisk ]]; then
    if [[ $cpid == 0x8020 ]]; then
