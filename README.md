@@ -5,11 +5,11 @@ A shell script used to bypass iCloud Hello Activation on firmware version 6.0 - 
 
 Instruction:
 
-`` git clone https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
+`` git clone https://github.com/noncodeguy/FuckSetupApp.git && chmod -R 755 FuckSetupApp && cd FuckSetupApp && ./fsa ``
 
 对于中国用户（使用GitHub镜像进行克隆）：
 
-`` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && cd FuckSetupApp && chmod +x ./fsa && ./fsa ``
+`` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && chmod -R 755 FuckSetupApp && cd FuckSetupApp && ./fsa ``
 
 # 中文
 
