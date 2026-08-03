@@ -24,7 +24,7 @@ Instruction:
 本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux Mint/Ubuntu的LiveCD来使用本脚本
 
 
-关于usbliter8的BootROM漏洞
+# 关于usbliter8的BootROM漏洞
 
 由于usbliter8漏洞的存在，只要可以获得A12/A13设备的ramdisk并引导，你甚至可以在A12+的设备上使用此脚本
 
