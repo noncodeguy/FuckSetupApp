@@ -1,4 +1,4 @@
-## FuckSetupApp
+# FuckSetupApp
 A shell script used to bypass iCloud Hello Activation on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 使用方法：
@@ -11,11 +11,11 @@ Instruction:
 
 `` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && chmod -R 755 FuckSetupApp && cd FuckSetupApp && ./fsa ``
 
-# 中文
+## 中文
 
 一只iCloud激活锁绕过shell脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
 
-# 注意
+## 注意
 
 本脚本不连接任何服务器，不需要注册ECID，更不需要花钱，只需要下载到本地并运行可执行文件fsa即可完成绕过
 
@@ -24,7 +24,7 @@ Instruction:
 本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux Mint/Ubuntu的LiveCD来使用本脚本
 
 
-# 关于usbliter8的BootROM漏洞
+## 关于usbliter8的BootROM漏洞
 
 由于usbliter8漏洞的存在，只要可以获得A12/A13设备的ramdisk并引导，你甚至可以在A12+的设备上使用此脚本
 
@@ -34,7 +34,7 @@ Instruction:
 
 如果你发现了A12/A13设备提取与引导ramdisk的bug，请提交到上述的仓库！
 
-# 原理
+## 原理
 
 感谢setupapp大大在b站提供的绕ID思路，原视频在 https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd，有能力的请一定去支持他！
 
@@ -52,14 +52,14 @@ Instruction:
   
 7. 完美。
 
-# 绕后须知
+## 绕后须知
 
 若是重命名系统快照，则刷机，升级或恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到刷机和恢复rootFS等操作也不会跳激活锁，更彻底。
 
-# English
+## English
 An iCloud Hello Activation Bypass shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
-# Caution
+## Caution
 
 This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the bypass
 
@@ -67,7 +67,7 @@ Based on verygenericname's SSHRD_Script project
 
 Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
 
-# About the usbliter8 BootROM PoC
+## About the usbliter8 BootROM PoC
 Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
 
 This issue is solved by dev orangera1n, original repo at https://github.com/Orangera1n/spironolcatone
@@ -76,7 +76,7 @@ Initial support for usbliter8 vulnerable devices is in v2.0, however it's VERY E
 
 If you found any bug during extracting and booting the ramdisk, please report the issue to the repo mentioned above!
 
-# The Principle
+## The Principle
 Thanks for "setupapp" at bilibili for providing the of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
 
 1. Create device's ramdisk by using SSHRD_Script
@@ -93,5 +93,5 @@ Thanks for "setupapp" at bilibili for providing the of bypass activation, origin
 
 7. Perfect-o.
 
-# Post-bypassing
+## Post-bypassing
 Only renaming the system snapshot will cause Hello Screen to appear again when you restore/upgrade/restore rootFS. This script only contains commands deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
