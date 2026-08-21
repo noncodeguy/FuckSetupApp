@@ -6,36 +6,36 @@ echo "|  __|| | | || |   |   |  \__  \|  __|  | |  | | | || ____/| /_\ || ___/ |
 echo "| |   | |_| || \__ | |\ \ ___| || |__   | |  | |_| || |    | | | || |    | |"
 echo "|_|   \_____/\____||_| \_|\____/|____|  |_|  \_____/|_|    |_| |_||_|    |_|"
 echo "--------------------------------------------------------------------------------"
-echo "### If the script is jammed, try pressing 1-2 times of Enter key ###"
-echo "### If the script reports 'Where's the device?' and exit ###"
-echo "### Then try reconnecting, unlocking your device and hit trust ###"
+echo "### 如果脚本卡住 请尝试按一到两次Enter ###"
+echo "### 请确保你的设备在正常模式 ###"
+echo "### 如果脚本显示“设备呢？”并退出 ###"
+echo "### 请尝试重连，解锁并在设备上点按信任 ###"
 echo "--------------------------------------------------------------------------------"
-echo "IF YOUR SOFTWARE VERSION IS ABOVE iOS 9,"
-echo "THIS SCRIPT WILL ERASE ALL DATA TO REMOVE YOUR ACTIVATION LOCK."
-echo "PLEASE THINK TWICE BEFORE PROCEEDING. YOU CAN ALSO PRESS CTRL + C TO EXIT."
-echo "You can learn how to use SSHRD_Script to extract the files in your device"
+echo "如果你的设备是 iOS 9 以上,"
+echo "本脚本将会 ### 抹除设备上的所有信息 ### 来移除setup.app"
+echo "请三思而后行，或者按Ctrl + C来退出"
+echo "你可以了解如何用SSHRD_Script工具来提取设备文件"
 echo "--------------------------------------------------------------------------------"
-echo "This script only supports 6.0 - 12.4.4 and 13.0 - 13.2.3"
-echo "And only device using A13 chip and below"
-echo "If you're not on that version or using devices with A13 above, it WON'T WORK"
-echo "Support for A12/A13 is in EARLY BETA, and Linux is NOT supported"
-echo "If you're using an A12/A13 device, please use it under parental supervision!"
+echo "本脚本仅支持 6.0 - 12.4.4 和 13.0 - 13.2.3版本"
+echo "如果你的设备使用了其他版本， 将不会生效"
+echo "对于A12/A13设备的支持还在测试版"
+echo "如果你正在使用A12/A13设备，请准备好开发板，并在父母陪同下进行！"
 echo "--------------------------------------------------------------------------------"
 sleep 3
-echo "Checking iOS Version..."
+echo "检查版本中..."
 sleep 5
 OS=$(uname -s)
 case "$OS" in
     Darwin) BINDIR="./Darwin" ;;
     Linux)  BINDIR="./Linux" ;;
-    *)      echo "i said no windows dud, are you using Git Bash?"; exit 1 ;;
+    *)      echo "你知道Windows不支持，对吧？还是你在用Git Bash?"; exit 1 ;;
 esac
 if [[ $OS == Linux ]]; then
-    echo "You need to install usbmuxd to begin the process"
-    echo "Try 'sudo apt install usbmuxd' on Debian-based distros,"
-    echo "Or 'sudo dnf install usbmuxd' on RedHat-based distros"
-    echo "You'll also need your sudo password after prompted."
-    echo "Please make sure if it's installed. If installed, press Enter"
+    echo "你需要安装usbmuxd来继续"
+    echo "在以Debian为基础的发行版上尝试运行'sudo apt install usbmuxd',"
+    echo "在以RedHat为基础的发行版上尝试运行'sudo dnf install usbmuxd'"
+    echo "你也需要在提示时需要电脑的sudo密码."
+    echo "请确保其已经被安装，若以安装，按Enter"
     read -s
     sudo systemctl stop usbmuxd
     sudo usbmuxd
@@ -52,32 +52,32 @@ if [[ "$MODEL" == iPhone11* || "$MODEL" == iPhone12* || "$MODEL" == iPad11* || "
 else
     RDDIR="./sshrd"
 fi
-cd $RDDIR || { echo "Did you just double-clicked the executable? Plz cd into your 'FuckSetupApp' directory and run './fsa' manually. DON'T BE LAZY!"; exit 1; }
+cd $RDDIR || { echo "你是不是直接双击了可执行文件？请cd到文件夹并手动在终端运行"./fsa"，可别犯懒！"; exit 1; }
 killall iproxy 2>/dev/null | true
 if [[ -z "$VERSION" ]]; then
-    echo "Where's the device?"
+    echo "设备呢?"
     exit 1
 elif [[ "$VERSION" == *"ERROR: No device found!"* ]]; then
-    echo "Where's the device? Or...you're in recovery/DFU mode? Exit plz"
+    echo "设备呢？是在恢复模式/DFU模式吗？请退出后重试"
     exit 1
 elif [[ "$VERSION" == *"ERROR: Could not connect to lockdownd: Mux error"* ]]; then
-    echo "Are you in Recovery or DFU Mode? Exit plz"
+    echo "设备在恢复/DFU模式吗？ 请退出"
     exit 1
 else
-    echo "Found iOS version $VERSION, Loading DFU Mode tutorial..."
+    echo "找到iOS版本 $VERSION, 加载DFU教程..."
 fi
 sleep 3
-echo "Now set your device to DFU mode."
+echo "现在将设备进入DFU模式."
 sleep 1
 if [[ "$MODEL" == iPhone9* || "$MODEL" == iPhone10* || "$MODEL" == iPhone11* || "$MODEL" == iPhone12* ]]; then 
-    echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
+    echo "请再次确保设备在正常/恢复模式，如果不是请按Ctrl + C退出"
     sleep 5
-    echo "Entering recovery mode..."
+    echo "进入恢复模式..."
     export UCID=$("$BINDIR"/ideviceinfo -k UniqueDeviceID)
     "$BINDIR"/ideviceenterrecovery $UCID
     RUCONNECTINGIT=$($BINDIR/irecovery -q)
     if [[ $RUCONNECTINGIT == "*ERROR: Unable to connect to device*" ]]; then
-        echo "Where is your device?"
+        echo "设备呢？"
         $BINDIR/irecovery -n
         exit 1
     else
@@ -85,91 +85,92 @@ if [[ "$MODEL" == iPhone9* || "$MODEL" == iPhone10* || "$MODEL" == iPhone11* || 
         deviceidu8=$("$BINDIR"/irecovery -q | grep PRODUCT | sed 's/PRODUCT: //')
         rdu8dir="$boardcfgu8-$deviceidu8"
         sleep 3
-        echo "You need to press Volume Down button + power button for 4s,"
-        echo "Then release Volume Down button, hold home button for 10s"
-        echo "Press Enter when ready, the guide will start after pressing Enter"
+        echo "你需要按住音量减键 + 开机键4秒,"
+        echo "再松开开机键，按住音量减键10秒"
+        echo "准备好后请按Enter，教程将会在按Enter后开始"
         read -s
-        echo "Get prepared..." 
+        echo "准备好..." 
         echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
-        echo "Press Power & Volume Down button" 
+        echo "按住音量减键 + 开机键" 
         echo "4" && sleep 1 && echo "3" && sleep 1 && "$BINDIR"/irecovery -n && echo "2" && sleep 1 && echo "1" && sleep 1
-        echo "Release Power button, hold Volume Down button"
+        echo "松开开机键，按住音量减键"
         echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
     fi
 else
-    echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
+    echo "请再次确保设备在正常/恢复模式，如果不是请按Ctrl + C退出"
     sleep 5
-    echo "Entering recovery mode..."
+    echo "进入恢复模式..."
     export UCID=$("$BINDIR"/ideviceinfo -k UniqueDeviceID) 
     "$BINDIR"/ideviceenterrecovery $UCID 
     sleep 3
-    echo "You need to press Home button + power button for 4s,"
-    echo "Then release power button, hold Home button for 10s"
-    echo "Press Enter when ready, the guide will start after pressing Enter"
+    echo "你需要按住Home键 + 开机键4秒,"
+    echo "再松开开机键，按住Home键10秒"
+    echo "准备好后请按Enter，教程将会在按Enter后开始"
     read -s
-    echo "Get prepared..." 
+    echo "准备好..." 
     echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
-    echo "Press Power & Home button" 
+    echo "按住home键 + 开机键" 
     echo "4" && sleep 1 && echo "3" && sleep 1 && "$BINDIR"/irecovery -n && echo "2" && sleep 1 && echo "1" && sleep 1
-    echo "Release Power button, hold Home button"
+    echo "松开开机键，按住home键"
     echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
 fi
-echo "Now your device should be in DFU mode...hopefully."
-echo "If not, Press Ctrl + C restart the script and do it again. sry"
+echo "现在你的设备应该已经进入了DFU模式...应该吧."
+echo "如果没有，请重新运行此脚本。骚瑞"
 sleep 3
-echo "THIS SCRIPT WILL ERASE ALL DATA ON THIS DEVICE, AND IT WLL NEVER BE RECOVERED!"
-echo "Press Enter to proceed."
+echo "本脚本将抹除设备所有数据！（iOS 10及以上）"
+echo "按Enter继续."
 read -s
 if [[ "$MODEL" == iPhone11* || "$MODEL" == iPhone12* || "$MODEL" == iPad11* || "$MODEL" == iPad12,1 || "$MODEL" == iPad12,2 ]]; then
-    echo "Now plug your device in your Pi Pico/Waveshare board to enter pwned DFU mode"
-    echo "You can check the status of that LED light on your board to make sure it's successfully pwned."
-    echo "More detailed informations is mentioned in https://github.com/prdgmshift/usbliter8"
+    echo "现在将设备插入到已经刷好usbliter8固件的开发板上来进入破解DFU模式"
+    echo "你可以检查那颗LED灯的状态来判断是否破解成功."
+    echo "更多信息在此阅读： https://github.com/prdgmshift/usbliter8"
     while true; do
-        echo "After pwning, press Enter"
+        echo "在破解后，按 Enter"
         read -s
-        echo "Checking DFU status..."
+        echo "检查DFU状态..."
         sleep 3
         PWNA12=$("$BINDIR"/irecovery -q | grep PWND)
         if [[ $PWNA12 == *usbliter8* ]]; then
-            echo "Your device is successfully pwned!"
+            echo "设备已成功破解!"
             break 
         else
-            echo "Pwning failed. Please restart."
+            echo "破解失败，请重试."
             sleep 2
         fi
     done
-    echo "Please wait for ramdisk to be extracted..."
+    echo "请等待提取ramdisk..."
     ./makebootfiles.sh "$VERSION" ./sshrd-u8/firmwares.json
     if [[ $? -ne 0 ]]; then
-        echo "ou shii extract failed"
+        echo "我去咋失败了"
         exit 1
     fi
-    echo "Extraction completed!...hopefully. Now booting ramdisk..."
+    echo "提取成功！准备引导ramdisk..."
     sleep 3
     ./spiro.sh boot "$rdu8dir"
     if [[ $? -ne 0 ]]; then
-        echo "ou shii boot failed"
+        echo "我去咋失败了"
         exit 1
     fi
-    echo "Now connecting to SSH..."
+    echo "准备连接到SSH..."
 else
-    echo "Please wait for ramdisk to be extracted..."
-    echo "If the script got stuck, try press Enter for 1 time"
-    echo "This could happen when you run this script for the second time"
+    echo "请等待提取ramdisk..."
+    echo "若脚本卡住，请尝试按Enter"
+    echo "这在第二次运行本脚本时可能会出现"
     ./sshrd.sh "$VERSION"
     if [[ $? -ne 0 ]]; then
-        echo "ou shii extract failed"
+        echo "我去咋失败了"
         exit 1
     fi
-    echo "Extraction completed!...hopefully. Now booting ramdisk..."
-    echo "If the script got stuck, try press Enter for 1 time"
+    echo "提取成功！准备引导ramdisk..."
+    echo "如果脚本又卡住了，请再按Enter"
     sleep 2
     ./sshrd.sh boot
     if [[ $? -ne 0 ]]; then
-        echo "ou shii boot failed"
+        echo "我去咋失败了"
         exit 1
     fi
-    echo "Stuck again? Press Enter 1 time"
+    echo "又卡了？可以再按一次Enter"
+    echo "此时你应该看到屏幕上跑码"
     sleep 20
 fi
 
@@ -257,10 +258,10 @@ done
 
 sleep 3
 "$BINDIR"/sshpass -p 'alpine' ssh -T -o HostKeyAlgorithms=+ssh-rsa StrictHostKeyChecking=no -p2222 root@localhost << EOF
-    echo "About to perform Setup.app Elimination..."
+    echo "准备移除Setup.app..."
     $REMOTE_SCRIPT
 EOF
-echo "Now your device should bypassed the activation lock...hopefully."
-echo "Remember, you can't sideload apps after bypassing, and there could be some problems with stock activation."
-echo "Please report in Issues in my repo if anything happens. Good luck!"
+echo "现在你的设备应成功绕过了激活锁...应该吧"
+echo "请记住，绕过后你将无法使用侧载."
+echo "如果出现问题请在我的仓库里提交issue。祝你好运!"
 kill $IPROXY_PID 2>/dev/null
