@@ -1,5 +1,5 @@
 # FuckSetupApp
-A shell script used to bypass iCloud Hello Activation on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
+A shell script used to remove Setup.app on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 使用方法：
 
@@ -13,7 +13,7 @@ Instruction:
 
 ## 中文
 
-一只iCloud激活锁绕过shell脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
+一只激活锁绕过shell脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
 
 ## 注意
 
@@ -57,11 +57,11 @@ Instruction:
 若是重命名系统快照，则刷机，升级或恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到刷机和恢复rootFS等操作也不会跳激活锁，更彻底。
 
 ## English
-An iCloud Hello Activation Bypass shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
+A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 ## Caution
 
-This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the bypass
+This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the removal
 
 Based on verygenericname's SSHRD_Script project
 
