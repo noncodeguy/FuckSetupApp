@@ -1,13 +1,6 @@
 # FuckSetupApp
 A shell script used to remove Setup.app on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
-
-## 重要信息
-
-本脚本目前没有对iPhone 3GS, iPod Touch 3 (如果用SundanceInH2A强升级) 以及A4 - A6设备的支持 这些设备会在提取ramdisk的时候卡住！
-
-## Important Information
-
-This script is NOT compatible with iPhone 3GS, iPod Touch 3 (If using force upgrade with SundanceInH2A) and devices using A4 - A6 chip, these devices will get stuck on the ramdisk extraction part!
+Now supports both 32-bit, 64-bit arm64 and 64-bit arm64e processors (Or should I say iPhone 3GS, iPod 3G, A4-A13 devices)
 
 使用方法：
 
