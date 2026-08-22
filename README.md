@@ -1,16 +1,79 @@
 # FuckSetupApp
 A shell script used to remove Setup.app on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 Now supports both 32-bit, 64-bit arm64 and 64-bit arm64e processors (Or should I say iPhone 3GS, iPod 3G, A4-A13 devices)
+From 3.0 I will not provide sshrd folders (sshrd, sshrd32, sshrd-u8) in my repository, they'll only be released in Releases
+
+此部分的README是英文，中文请下滑阅读
+
+# English
+A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
+
+## Instruction:
+
+1. Download the zipped file in releases section
+
+2. Open a terminal window (On Mac, open Terminal.app)
+
+3. Run this command: `` chmod -R 755 FillYourFuckSetupAppDirectoryHere ``
+
+4. cd into the directory you just downloaded
+ 
+5. Run `` ./fsa ``
+
+## Caution
+
+This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the removal
+
+Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
+
+## About the usbliter8 BootROM PoC
+Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
+
+This issue is solved by dev orangera1n, original repo at https://github.com/Orangera1n/spironolactone
+
+Initial support for usbliter8 vulnerable devices is in v2.0, however it's VERY EXPERIMENTAL, and have a high chance that might NOT success.
+
+If you found any bug during extracting and booting the ramdisk, please report the issue to the repo mentioned above!
+
+## The Principle
+Thanks for "setupapp" at bilibili for providing the of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
+
+1. Create device's ramdisk by using SSHRD_Script
+
+2. Boot ramdisk when device is in pwnDFU mode
+
+3. Mount system partition under ramdisk environment
+
+4. Execute Setup.app deletion command (that's why it's called FuckSetupApp)
+
+5. Rename, or delete and rebuild system snapshot (Differs from different versions)
+
+6. Execute DFU erase (Differs from different versions)
+
+7. Perfect-o.
+
+## Post-bypassing
+Only renaming the system snapshot will cause Hello Screen to appear again when you restore rootFS. This script only contains commands deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
+
+## Special Thanks to
+
+A12/A13 ramdisk: github.com/Orangera1n/spironolactone
+
+A7-A11 ramdisk: github.com/verygenericname/SSHRD_Script
+
+32bit devices' ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
 
 使用方法：
 
-Instruction:
+1. 从releases里下载要用的zip文件（不是Source code！）
 
-`` git clone https://github.com/noncodeguy/FuckSetupApp.git && chmod -R 755 FuckSetupApp && cd FuckSetupApp && ./fsa ``
+2. 打开一个终端窗口（在Mac上，打开Terminal.app）
 
-对于中国用户（使用GitHub镜像进行克隆）：
+3. 运行这个命令：`` chmod -R 755 在这里输入你的FuckSetupApp路径 ``
 
-`` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && chmod -R 755 FuckSetupApp && cd FuckSetupApp && ./fsa ``
+4. cd到刚解压好的文件夹内
+
+5. 运行 `` ./fsa_cn ``
 
 # 中文
 
@@ -62,49 +125,3 @@ A12/A13设备ramdisk: github.com/Orangera1n/spironolactone
 A7-A11设备ramdisk: github.com/verygenericname/SSHRD_Script
 
 32bit设备ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
-
-# English
-A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
-
-## Caution
-
-This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the removal
-
-Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
-
-## About the usbliter8 BootROM PoC
-Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
-
-This issue is solved by dev orangera1n, original repo at https://github.com/Orangera1n/spironolactone
-
-Initial support for usbliter8 vulnerable devices is in v2.0, however it's VERY EXPERIMENTAL, and have a high chance that might NOT success.
-
-If you found any bug during extracting and booting the ramdisk, please report the issue to the repo mentioned above!
-
-## The Principle
-Thanks for "setupapp" at bilibili for providing the of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
-
-1. Create device's ramdisk by using SSHRD_Script
-
-2. Boot ramdisk when device is in pwnDFU mode
-
-3. Mount system partition under ramdisk environment
-
-4. Execute Setup.app deletion command (that's why it's called FuckSetupApp)
-
-5. Rename, or delete and rebuild system snapshot (Differs from different versions)
-
-6. Execute DFU erase (Differs from different versions)
-
-7. Perfect-o.
-
-## Post-bypassing
-Only renaming the system snapshot will cause Hello Screen to appear again when you restore rootFS. This script only contains commands deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
-
-## Special Thanks to
-
-A12/A13 ramdisk: github.com/Orangera1n/spironolactone
-
-A7-A11 ramdisk: github.com/verygenericname/SSHRD_Script
-
-32bit devices' ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
