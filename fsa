@@ -21,15 +21,18 @@ echo "If you're not on that version or using devices with A13 above, it WON'T WO
 echo "Support for A12/A13 is in EARLY BETA, and Linux is NOT supported"
 echo "If you're using an A12/A13 device, please use it under parental supervision!"
 echo "--------------------------------------------------------------------------------"
-sleep 3
+echo "After reading the text above, press Enter to proceed. Press Ctrl + C to exit"
+read -s
 echo "Checking iOS Version..."
 sleep 5
+#check os
 OS=$(uname -s)
 case "$OS" in
     Darwin) BINDIR="./Darwin" ;;
     Linux)  BINDIR="./Linux" ;;
     *)      echo "i said no windows dud, are you using Git Bash?"; exit 1 ;;
 esac
+# Restarting usbmuxd on Linux
 if [[ $OS == Linux ]]; then
     echo "You need to install usbmuxd to begin the process"
     echo "Try 'sudo apt install usbmuxd' on Debian-based distros,"
@@ -38,22 +41,30 @@ if [[ $OS == Linux ]]; then
     echo "Please make sure if it's installed. If installed, press Enter"
     read -s
     sudo systemctl stop usbmuxd
-    sudo usbmuxd
+    sudo usbmuxd -p -f
 fi
+#Check iOS version, product model and chip ID
 if [[ $OS == Darwin ]]; then
     VERSION=$(./ideviceinfos/ideviceinfo_macos -k ProductVersion 2>&1)
     MODEL=$(./ideviceinfos/ideviceinfo_macos -k ProductType 2>&1)
+    CHIP=$(./ideviceinfos/ideviceinfo_macos -k HardwarePlatform 2>&1)
 elif [[ $OS == Linux ]]; then
     VERSION=$(./ideviceinfos/ideviceinfo_linux -k ProductVersion 2>&1)
     MODEL=$(./ideviceinfos/ideviceinfo_linux -k ProductType 2>&1)
+    CHIP=$(./ideviceinfos/ideviceinfo_linux -k HardwarePlatform 2>&1)
 fi
-if [[ "$MODEL" == iPhone11* || "$MODEL" == iPhone12* || "$MODEL" == iPad11* || "$MODEL" == iPad12,1 || "$MODEL" == iPad12,2 ]]; then
+# cd into the target sshrd directory
+if [[ "$CHIP" == "t8020" || "$CHIP" == "t8030" ]]; then
     RDDIR="./sshrd-u8"
-else
+elif [[ "$CHIP" == "s5l8960x" || "$CHIP" == "t7000" || "$CHIP" == "t7001" || "$CHIP" == "s8000" || "$CHIP" == "s8001" || "$CHIP" == "s8003" || "$CHIP" == "t8010" || "$CHIP" == "t8011" || "$CHIP" == "t8015" ]]; then
     RDDIR="./sshrd"
+elif [[ "$CHIP" == "s5l8920x" || "$CHIP" =="s5l8922x" || "$CHIP" == "s5l8930x" || "$CHIP" == "s5l8950x" || "$CHIP" == "s5l8955x" || "$CHIP" == "s5l8940x" || "$CHIP" == "s5l8945x" || "$CHIP" == "s5l895Xx" ]]; then
+    RDDIR="./sshrd32"
+else 
+    echo "bruv are you using devices with A14 and above? read the readme smartahh"
+    exit 1
 fi
 cd $RDDIR || { echo "Did you just double-clicked the executable? Plz cd into your 'FuckSetupApp' directory and run './fsa' manually. DON'T BE LAZY!"; exit 1; }
-killall iproxy 2>/dev/null | true
 if [[ -z "$VERSION" ]]; then
     echo "Where's the device?"
     exit 1
@@ -67,9 +78,9 @@ else
     echo "Found iOS version $VERSION, Loading DFU Mode tutorial..."
 fi
 sleep 3
-echo "Now set your device to DFU mode."
-sleep 1
 if [[ "$MODEL" == iPhone9* || "$MODEL" == iPhone10* || "$MODEL" == iPhone11* || "$MODEL" == iPhone12* ]]; then 
+    echo "Now set your device to DFU mode."
+    sleep 1
     echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
     sleep 5
     echo "Entering recovery mode..."
@@ -96,7 +107,25 @@ if [[ "$MODEL" == iPhone9* || "$MODEL" == iPhone10* || "$MODEL" == iPhone11* || 
         echo "Release Power button, hold Volume Down button"
         echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
     fi
+elif [[ "$CHIP" == "s5l8940x" || "$CHIP" == "s5l8945x" ]]; then
+    echo "You're using an A5 device, right?"
+    sleep 2
+    echo "For some reason, you cannot enter pwned DFU like other 32bit device does"
+    sleep 4
+    echo "This is because A5 can be exploited with checkm8, but needs an Arduino with USB host shield to enter pwned DFU, and that's deprecated"
+    sleep 4
+    echo "Here's how you can enter kDFU mode (Which is available for A5):"
+    echo "Jailbreak it with any method, Open Cydia/Zebra, add source URL 'repo.tihmstar.net'"
+    echo "Search and Install 'kDFUApp', if your screen didn't turn black, look for 'kDFUApp' on your home screen"
+    echo "Open it, press these buttons in order:"
+    echo "Find Bundle -> Download iBSS -> Find iBSS -> Pwn iBSS -> Enter kDFU"
+    echo "Wait for it to show 'Entering kDFU mode, bye bye system'"
+    echo "And wait for couple of secs, you may enter kDFU mode"
+    echo "Press Enter after entering kDFU mode"
+    read -s
 else
+    echo "Now set your device to DFU mode."
+    sleep 1
     echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
     sleep 5
     echo "Entering recovery mode..."
@@ -117,10 +146,10 @@ fi
 echo "Now your device should be in DFU mode...hopefully."
 echo "If not, Press Ctrl + C restart the script and do it again. sry"
 sleep 3
-echo "THIS SCRIPT WILL ERASE ALL DATA ON THIS DEVICE, AND IT WLL NEVER BE RECOVERED!"
+echo "THIS SCRIPT WILL ERASE ALL DATA ON THIS DEVICE (Above iOS 10), AND IT WLL NEVER BE RECOVERED!"
 echo "Press Enter to proceed."
 read -s
-if [[ "$MODEL" == iPhone11* || "$MODEL" == iPhone12* || "$MODEL" == iPad11* || "$MODEL" == iPad12,1 || "$MODEL" == iPad12,2 ]]; then
+if [[ "$CHIP" == "t8020" || "$CHIP" == "t8030" ]]; then
     echo "Now plug your device in your Pi Pico/Waveshare board to enter pwned DFU mode"
     echo "You can check the status of that LED light on your board to make sure it's successfully pwned."
     echo "More detailed informations is mentioned in https://github.com/prdgmshift/usbliter8"
@@ -152,6 +181,18 @@ if [[ "$MODEL" == iPhone11* || "$MODEL" == iPhone12* || "$MODEL" == iPad11* || "
         exit 1
     fi
     echo "Now connecting to SSH..."
+elif [[ "$CHIP" == "s5l8920x" || "$CHIP" =="s5l8922x" || "$CHIP" == "s5l8930x" || "$CHIP" == "s5l8950x" || "$CHIP" == "s5l8955x" || "$CHIP" == "s5l8940x" || "$CHIP" == "s5l8945x" || "$CHIP" == "s5l895Xx" ]]; then
+    echo "If the script asks for a build number, just press enter, you can custom build number if you know what you're doing"
+    echo "I recommend you to find the correct build ID for your iOS version, a wrong ramdisk could cause a bootloop!"
+    echo "Please check your current version number (e.g. 6.1.6) and google it to find the build number (e.g. 6.1.6 -> 10B500)"
+    echo "After entering the SSH ramdisk menu, just PRESS Exit AND DO NOTHING! For now, press Enter to proceed"
+    read -s
+    echo "Please wait for ramdisk to be booted..."
+    ./sshrd32.sh --sshrd --no-version-check
+    if [[ $? -ne 0 ]]; then
+        echo "ou shii extract failed"
+        exit 1
+    fi
 else
     echo "Please wait for ramdisk to be extracted..."
     echo "If the script got stuck, try press Enter for 1 time"
@@ -194,6 +235,7 @@ if ver_ge "$VERSION" "6.0" && ver_le "$VERSION" "9.3.6"; then
         rm -rf /mnt1/Applications/Setup.app
         echo 'Rebooting...'
         /sbin/reboot
+        reboot_bak
     "
 elif ver_ge "$VERSION" "10.0" && ver_le "$VERSION" "10.2.1"; then
     REMOTE_SCRIPT="
@@ -256,7 +298,7 @@ for i in {1..10}; do
 done
 
 sleep 3
-"$BINDIR"/sshpass -p 'alpine' ssh -T -o HostKeyAlgorithms=+ssh-rsa StrictHostKeyChecking=no -p2222 root@localhost << EOF
+"$BINDIR"/sshpass -p 'alpine' ssh -T -o HostKeyAlgorithms=+ssh-rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p2222 root@localhost << EOF
     echo "About to perform Setup.app Elimination..."
     $REMOTE_SCRIPT
 EOF
