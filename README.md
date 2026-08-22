@@ -1,6 +1,8 @@
 # FuckSetupApp
 A shell script used to remove Setup.app on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
+
 Now supports both 32-bit, 64-bit arm64 and 64-bit arm64e processors (Or should I say iPhone 3GS, iPod 3G, A4-A13 devices)
+
 From 3.0 I will not provide sshrd folders (sshrd, sshrd32, sshrd-u8) in my repository, they'll only be released in Releases
 
 此部分的README是英文，中文请下滑阅读
