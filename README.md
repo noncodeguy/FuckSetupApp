@@ -12,15 +12,13 @@ Instruction:
 
 `` git clone https://gh-proxy.com/https://github.com/noncodeguy/FuckSetupApp.git && chmod -R 755 FuckSetupApp && cd FuckSetupApp && ./fsa ``
 
-## 中文
+# 中文
 
 一只激活锁绕过shell脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
 
 ## 注意
 
 本脚本不连接任何服务器，不需要注册ECID，更不需要花钱，只需要下载到本地并运行可执行文件fsa即可完成绕过
-
-基于verygenericname的SSHRD_Script项目
 
 本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux Mint/Ubuntu的LiveCD来使用本脚本
 
@@ -55,23 +53,29 @@ Instruction:
 
 ## 绕后须知
 
-若是重命名系统快照，则刷机，升级或恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到刷机和恢复rootFS等操作也不会跳激活锁，更彻底。
+若是重命名系统快照，则恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到恢复rootFS操作也不会跳激活锁，更彻底。
 
-## English
+## 特别鸣谢
+
+A12/A13设备ramdisk: github.com/Orangera1n/spironolactone
+
+A7-A11设备ramdisk: github.com/verygenericname/SSHRD_Script
+
+32bit设备ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
+
+# English
 A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
 ## Caution
 
 This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the removal
 
-Based on verygenericname's SSHRD_Script project
-
 Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
 
 ## About the usbliter8 BootROM PoC
 Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
 
-This issue is solved by dev orangera1n, original repo at https://github.com/Orangera1n/spironolcatone
+This issue is solved by dev orangera1n, original repo at https://github.com/Orangera1n/spironolactone
 
 Initial support for usbliter8 vulnerable devices is in v2.0, however it's VERY EXPERIMENTAL, and have a high chance that might NOT success.
 
@@ -95,4 +99,12 @@ Thanks for "setupapp" at bilibili for providing the of bypass activation, origin
 7. Perfect-o.
 
 ## Post-bypassing
-Only renaming the system snapshot will cause Hello Screen to appear again when you restore/upgrade/restore rootFS. This script only contains commands deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
+Only renaming the system snapshot will cause Hello Screen to appear again when you restore rootFS. This script only contains commands deleting and rebuilding system snapshot, so anything related to restoring rootFS won't cause the Hello Screen to appear again.
+
+## Special Thanks to
+
+A12/A13 ramdisk: github.com/Orangera1n/spironolactone
+
+A7-A11 ramdisk: github.com/verygenericname/SSHRD_Script
+
+32bit devices' ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
