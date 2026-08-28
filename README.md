@@ -12,7 +12,7 @@ A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 
 
 ## Instruction:
 
-1. Download the zipped file in releases section
+1. Download the zipped file in releases section (NOT THE Source code.zip!!!)
 
 2. Open a terminal window (On Mac, open Terminal.app)
 
@@ -38,9 +38,9 @@ Initial support for usbliter8 vulnerable devices is in v2.0, however it's VERY E
 If you found any bug during extracting and booting the ramdisk, please report the issue to the repo mentioned above!
 
 ## The Principle
-Thanks for "setupapp" at bilibili for providing the of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
+Thanks for "setupapp" at bilibili for providing the principle of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
 
-1. Create device's ramdisk by using SSHRD_Script
+1. Create device's ramdisk by using SSH ramdisk
 
 2. Boot ramdisk when device is in pwnDFU mode
 
@@ -102,7 +102,7 @@ A7-A11 ramdisk: github.com/verygenericname/SSHRD_Script
 
 感谢setupapp大大在b站提供的绕ID思路，原视频在 https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd，有能力的请一定去支持他！
 
-1. 使用SSHRD_Script创建设备的ramdisk
+1. 使用SSH ramdisk创建设备的ramdisk
    
 2. 进入破解DFU（pwnDFU）来引导ramdisk
    
