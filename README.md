@@ -3,9 +3,6 @@ A shell script used to remove Setup.app on firmware version 6.0 - 12.4.4 / 13.0 
 
 From 3.0 I will not provide sshrd folders (sshrd, sshrd-u8) in my repository, they'll only be released in Releases
 
-# English
-A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
-
 Please read the tutorial.txt in my repo to learn how to use it.
 
 ## "$Me" != "A_Greedy_Man"
