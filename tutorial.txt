@@ -1,0 +1,59 @@
+How to use this thing
+1. Open up a terminal window (On Macs, open Terminal.app)
+   (One extra caution, if the terminal says "zsh: permission denied: .../Desktop/FuckSetupApp_v3.1/fsa" or anything like this, enter "chmod -R 755" and press space, then drag n' drop your FuckSetupApp folder in terminal window, press space)
+2. Input cd and press space, drag n' drop your FuckSetupApp folder in terminal window
+3. Press Enter, then run './fsa'
+4. Follow those guides written in the script.
+
+Q&As
+Q0: How to enter kDFU mode on A5 devices, and why can't I enter pwnDFU mode?
+A0: Jailbreak it with any method, Open Cydia/Zebra, add source URL 'repo.tihmstar.net'
+    Search and Install 'kDFUApp', if your screen didn't turn black, look for 'kDFUApp' on your home screen
+    Open it, press these buttons in order:
+    Find Bundle -> Download iBSS -> Find iBSS -> Pwn iBSS -> Enter kDFU
+    Wait for it to show 'Entering kDFU mode, bye bye system'
+    And until you see a black screen, wait for a couple of secs you may enter kDFU mode!
+    Press Enter after entering kDFU mode, and KEEP YOUR TERMINAL WINDOW THERE!
+    (CAUTION: Press power button [DO NOT LONG PRESS!!!] for a few times just to make sure your device is not just fallen asleep)
+A0/2: Actually, you CAN enter pwnDFU mode on A5(X) devices. But it requires extra hardware like Arduino Uno with USB host shield. Entering pwnDFU is way harder on A5(X) devices comparing to kDFU, so, yeah.
+    
+Q1: Why is my device is supported (3GS/iTouch 3G, A4-A13), but said Are you using A14...?
+A1: If you're seeing this update, it's fixed. (i think
+
+Q2: When is it gonna support Windows?
+A2: It's likely to be implemented in a forseeable future but NO ETA. I'm dealing with USB driver issues on Windows already. Please check out my another repo on noncodeguy/SSHRD_Script_Windows to find it out.
+      Again, NO ETA. This may take longer than you think.
+
+Q3: How about those super-old devices (like iPhone 3G?)
+A3: Setup.app does not exist on iOS 5 and earlier. If you got Legacy iOS Kit, plz use that instead.
+
+Q4: Can I sideload?
+A4: It can't, currently. Force removing setup.app still keeps your iDevice in an unactivated state.
+
+Q5: Is Ramdisk-based (Legacy-iOS-Kit to be precise) / WebKit jailbreak (Lyncis, carbon, TotallyNotSpyware) working good?
+A5: Of course! After installing the AppSync plugin you may install whatever IPAs you like.
+
+Q6: Is iCloud working?
+A6: Haven't tested but I strongly discourage you to log in your Apple ID. As I said earlier, your device still remained unactivated after removing setup.app forcefully, If John Appleseed sees a weird-ahh 10-years-old device logged on, you know what's gonna happen.
+
+Q7: I found (several)/(a) bug(s). Where can I...
+A7: The 'Issues' tag in my repository will help. Simply describe what happened (a screenshot would be nice) and upload it in Issues, and I can help you out.
+
+Q8: Is iMessage, App Store, blahblahblah working?
+A8: Sorry bud but I don't have a legacy device with activation lock, otherwise I would write a 3000-word essay to discuss about these. sry
+
+Q9: Is it untethered?
+A9: For sure! A simple reboot will not hurt at all.
+
+Q10: Did you just said restoring rootfs will not hurt?
+A10: In my case, the phrase 'Restoring rootFS' does not contain scenarios like restoring a device via iTunes/Finder using a firmware! If you're trying to wipe device or use Cydia Eraser, that would be good (theoretically), but restoring it? nah.
+
+Q11: What do you mean 'Waveshare'?
+A11: Like said in the README, to boot a ramdisk requires your device to enter pwnDFU mode. And that requires a valid BootROM exploit. For A12/A13 devices, there's a different BootROM exploit called 'usbliter8' (More specified infos here: github.com/prdgmshift/usbliter8). Instead of using checkm8, limera1n or whatever, the 'usbliter8' case requires an extra piece of hardware called a debug board. Most people recommend using a Waveshare RP2350-USB-A board, and that's where the 'Waveshare' comes from.
+
+Q12: How much is a debug board?
+A12: Well in my country it needs roughly $4 (¥30), try googling 'ebay waveshare RP-2350-USB-A', you'll find it out.
+
+Q13: Will it support any higher iOS versions/devices?
+A13: Nope. FuckSetupApp only focuses on removing setup.app and things like modifying MobileGestalt or factory activation isn't in my discussion field. 
+A13/2: For devices, even if A14/M1 devices do have a usable BootROM exploit still won't help. No A14/M1 or later chip will support iOS 13, which is the maximum version that this tool support. Not to say it may take another decade (let's hope not) to find another BootROM exploit.

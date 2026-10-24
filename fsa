@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-echo "check"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR" || exit 1
 unzip sshrd.zip
 rm sshrd.zip
 clear
@@ -25,8 +26,6 @@ echo "If you're using an A12/A13 device, please use it under parental supervisio
 echo "--------------------------------------------------------------------------------"
 echo "After reading the text above, press Enter to proceed. Press Ctrl + C to exit"
 read -s
-echo "Checking iOS Version..."
-sleep 5
 
 #check os
 OS=$(uname -s)
@@ -39,13 +38,134 @@ esac
 # Restarting usbmuxd on Linux
 if [[ $OS == Linux ]]; then
     echo "You need to install usbmuxd to begin the process"
-    echo "Please make sure if it's installed. If installed, press Enter"
+    echo "Please make sure if it's installed. If installed, press Enter, if not, press Ctrl + C"
     read -s
     sudo systemctl stop usbmuxd
     sudo usbmuxd -p -f
 fi
 
-# Check iOS version, product model and chip ID
+# some functions
+
+get_irec_field() {
+    local key="$1"
+    echo "$IREC_OUT" | grep "^${key}:" | cut -d: -f2- | tr -d '[:space:]'
+}
+
+gotodfu () {
+    while true; do 
+        local isitindfu
+        local button
+        local IREC_OUT 
+        local srtg 
+        local ecid
+        local answer
+        if [[ "$CHIP" == "s5l8940x" || "$CHIP" == "s5l8945x" ]]; then
+            echo "You're using an A5(X) device, right? For some reason, you cannot enter pwned DFU like other 32bit device does"
+            echo "Please read the Q0 in tutorial.txt and enter kDFU, and KEEP YOUR TERMINAL WINDOW THERE! Press Enter after entered kDFU"
+            read -s
+            IREC_OUT=$("$BINDIR"/irecovery -q 2>/dev/null)
+            srtg=$(echo "$IREC_OUT" | grep '^SRTG:' | cut -d: -f2- | tr -d '[:space:]')
+            ecid=$(echo "$IREC_OUT" | grep '^ECID:' | cut -d: -f2- | tr -d '[:space:]')
+            if [ -z "$srtg" ] && [ -n "$ecid" ]; then
+                echo "Entered kDFU mode, continuing..."
+                break
+            else
+                echo "Not in kDFU, Maybe retry? (Press 'y' to retry or other keys to exit)"
+                read -s answer
+                if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
+                    sleep 2
+                else
+                    echo "Exiting..."
+                    exit 1
+                fi
+            fi
+        fi
+        if [[ "$MODEL" == iPhone9* || "$MODEL" == iPhone10* || "$MODEL" == iPhone11* || "$MODEL" == iPhone12* ]]; then 
+            button="Volume Down"
+        else
+            button="Home"
+        fi
+        sleep 3
+        echo "You need to press $button + Power for 4s, then release Power and keep holding $button for 10s"  
+        echo "Press Enter when ready, the guide will start after pressing Enter"
+        read -s
+        echo "Get prepared..." 
+        echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
+        echo "Press Power & ${button} button" 
+        echo "4" && sleep 1 && echo "3" && sleep 1 && "$BINDIR"/irecovery -n || true && echo "2" && sleep 1 && echo "1" && sleep 1
+        echo "Release Power button, hold ${button} button"
+        echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
+        isitindfu=$("$BINDIR"/irecovery -q | grep MODE:)
+        if [[ "$isitindfu" == "MODE: DFU" ]]; then 
+            echo "Successfully entered DFU mode!"
+            break
+        else
+            echo "Failed entering DFU mode. Press Enter to restart tutorial..."
+            read -s
+        fi
+    done
+}
+
+gotorec () {
+    export UDID=$("$BINDIR"/ideviceinfo -k UniqueDeviceID)
+    if [ -z "$UDID" ]; then
+        echo "Failed to get UDID, is your device connected and trusted?"
+        exit 1
+    fi
+    while true; do
+        local mode
+        local answer
+        echo "Entering recovery mode..."
+        "$BINDIR"/ideviceenterrecovery "$UDID"
+        sleep 5
+        echo "Checking..."
+        mode="$("$BINDIR"/irecovery -q | grep MODE:)"
+        if [[ "$mode" != "MODE: Recovery" ]]; then
+            echo "Your device is not in recovery mode. Press 'y' to restart tutorial or other keys to exit"
+            read -s answer
+            if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
+                sleep 2
+            else
+                echo "Exiting..."
+                exit 1
+            fi
+        else
+            sleep 1
+            break
+        fi
+    done
+    gotodfu
+}
+
+# version number sorters
+ver_ge() {
+    local IFS=.
+    local i
+    local -a v1=($1) v2=($2)
+    for ((i=${#v1[@]}; i<${#v2[@]}; i++)); do v1[i]=0; done
+    for ((i=0; i<${#v1[@]}; i++)); do
+        [[ -z "${v2[i]}" ]] && v2[i]=0
+        if ((10#${v1[i]} > 10#${v2[i]})); then return 0; fi
+        if ((10#${v1[i]} < 10#${v2[i]})); then return 1; fi
+    done
+    return 0
+}
+
+ver_le() {
+    local IFS=.
+    local i
+    local -a v1=($1) v2=($2)
+    for ((i=${#v1[@]}; i<${#v2[@]}; i++)); do v1[i]=0; done
+    for ((i=0; i<${#v1[@]}; i++)); do
+        [[ -z "${v2[i]}" ]] && v2[i]=0
+        if ((10#${v1[i]} > 10#${v2[i]})); then return 1; fi
+        if ((10#${v1[i]} < 10#${v2[i]})); then return 0; fi
+    done
+    return 0
+}
+
+# Checks version, model, chip ID
+echo "Checking iOS Version..."
 if [[ $OS == Darwin ]]; then
     VERSION=$(./ideviceinfos/ideviceinfo_macos -k ProductVersion 2>&1)
     MODEL=$(./ideviceinfos/ideviceinfo_macos -k ProductType 2>&1)
@@ -55,12 +175,12 @@ elif [[ $OS == Linux ]]; then
     MODEL=$(./ideviceinfos/ideviceinfo_linux -k ProductType 2>&1)
     CHIP=$(./ideviceinfos/ideviceinfo_linux -k HardwarePlatform 2>&1)
 fi
-
-
-# Check if device is connected
 if ! echo "$VERSION" | grep -qE '^[0-9]+(\.[0-9]+)+$'; then
     echo "Where's your device?" >&2
     exit 1
+else
+    echo "Found device on iOS $VERSION, continuing..."
+    sleep 3
 fi
 
 # cd into sshrd directory
@@ -72,85 +192,15 @@ else
     echo "bruv are you using devices with A14 and above? read the readme smartahh"
     exit 1
 fi
+cd $RDDIR || exit 1
 
-cd $RDDIR || { echo "Did you just double-clicked the executable? Plz cd into your 'FuckSetupApp' directory and run './fsa' manually. DON'T BE LAZY!"; exit 1; }
-echo "Found device on iOS $VERSION, continuing..."
-sleep 3
-
-# Enter DFU
-while true; do
-if [[ "$MODEL" == iPhone9* || "$MODEL" == iPhone10* || "$MODEL" == iPhone11* || "$MODEL" == iPhone12* ]]; then 
-    echo "Now set your device to DFU mode."
-    sleep 1
-    echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
-    sleep 5
-    echo "Entering recovery mode..."
-    export UCID=$("$BINDIR"/ideviceinfo -k UniqueDeviceID)
-    "$BINDIR"/ideviceenterrecovery $UCID
-    RUCONNECTINGIT=$($BINDIR/irecovery -q)
-    if [[ $RUCONNECTINGIT == "*ERROR: Unable to connect to device*" ]]; then
-        echo "Where is your device?"
-        $BINDIR/irecovery -n
-        exit 1
-    else
-        boardcfgu8=$("$BINDIR"/irecovery -q | grep MODEL | sed 's/MODEL: //')
-        deviceidu8=$("$BINDIR"/irecovery -q | grep PRODUCT | sed 's/PRODUCT: //')
-        rdu8dir="$boardcfgu8-$deviceidu8"
-        sleep 3
-        echo "You need to press Volume Down button + power button for 4s, Then release Volume Down button, for 10s"
-        echo "Press Enter when ready, the guide will start after pressing Enter"
-        read -s
-        echo "Get prepared..." 
-        echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
-        echo "Press Power & Volume Down button" 
-        echo "4" && sleep 1 && echo "3" && sleep 1 && "$BINDIR"/irecovery -n && echo "2" && sleep 1 && echo "1" && sleep 1
-        echo "Release Power button, hold Volume Down button"
-        echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
-    fi
-elif [[ "$CHIP" == "s5l8940x" || "$CHIP" == "s5l8945x" ]]; then
-    echo "------------------------"
-    echo "You're using an A5 device, right? For some reason, you cannot enter pwned DFU like other 32bit device does"
-    sleep 4
-    echo "Here's how you can enter kDFU mode (Which is available for A5):"
-    echo "Jailbreak it with any method, Open Cydia/Zebra, add source URL 'repo.tihmstar.net'"
-    echo "Search and Install 'kDFUApp', if your screen didn't turn black, look for 'kDFUApp' on your home screen"
-    echo "Open it, press these buttons in order:"
-    echo "Find Bundle -> Download iBSS -> Find iBSS -> Pwn iBSS -> Enter kDFU"
-    echo "Wait for it to show 'Entering kDFU mode, bye bye system'"
-    echo "And wait for a couple of secs, you may enter kDFU mode"
-    echo "Press Enter after entering kDFU mode, and KEEP YOUR TERMINAL WINDOW THERE!"
-    echo "------------------------"
-    read -s
-else
-    echo "Now set your device to DFU mode."
-    sleep 1
-    echo "Make sure your device is in normal mode. If not, press Ctrl + C to exit"
-    sleep 5
-    echo "Entering recovery mode..."
-    export UCID=$("$BINDIR"/ideviceinfo -k UniqueDeviceID) 
-    "$BINDIR"/ideviceenterrecovery $UCID 
-    sleep 3
-    echo "You need to press Home button + power button for 4s,"
-    echo "Then release power button, hold Home button for 10s"
-    echo "Press Enter when ready, the guide will start after pressing Enter"
-    read -s
-    echo "Get prepared..." 
-    echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
-    echo "Press Power & Home button" 
-    echo "4" && sleep 1 && echo "3" && sleep 1 && "$BINDIR"/irecovery -n && echo "2" && sleep 1 && echo "1" && sleep 1
-    echo "Release Power button, hold Home button"
-    echo "8" && sleep 1 && echo "7" && sleep 1 && echo "6" && sleep 1 && echo "5" && sleep 1 && echo "4" && sleep 1 && echo "3" && sleep 1 && echo "2" && sleep 1 && echo "1" && sleep 1
-fi
-ISITINDFU=$("$BINDIR"/irecovery -q | grep MODE:)
-if [[ $ISITINDFU = *"MODE: DFU"* ]]; then
-    break
-else 
-    echo "Your device is not in DFU mode, please try again"
-fi
-done
+gotorec
 
 # pwndfu and ramdisk stuff
 if [[ "$CHIP" == "t8020" || "$CHIP" == "t8030" ]]; then
+    boardcfgu8=$("$BINDIR"/irecovery -q | grep MODEL | sed 's/MODEL: //')
+    deviceidu8=$("$BINDIR"/irecovery -q | grep PRODUCT | sed 's/PRODUCT: //')
+    rdu8dir="$boardcfgu8-$deviceidu8"
     echo "Now plug your device in your Pi Pico/Waveshare board to enter pwned DFU mode"
     while true; do
         echo "After pwning, press Enter"
@@ -184,22 +234,12 @@ else
     sleep 5
     ./sshrd.sh --sshrd --no-version-check
     if [[ $? -ne 0 ]]; then
-        echo "ou shii extract failed"
+        echo "ou shii it failed"
         exit 1
     fi
 fi
 
 # eliminate setup.app
-ver_ge() {
-    local sorted
-    sorted=$(printf '%s\n' "$1" "$2" | sort -V | head -n1)
-    [[ "$sorted" == "$2" ]]
-}
-ver_le() {
-    local sorted
-    sorted=$(printf '%s\n' "$1" "$2" | sort -V | head -n1)
-    [[ "$sorted" == "$1" ]]
-}
 
 REMOTE_SCRIPT=""
 
@@ -252,23 +292,22 @@ else
     "
 fi
 
-killall iproxy 2>/dev/null | true
+killall iproxy 2>/dev/null || true
 "$BINDIR/iproxy" 2222 22 >/dev/null 2>&1 &
 IPROXY_PID=$!
 
-for i in {1..10}; do
+for i in {1..20}; do
     if nc -z localhost 2222 2>/dev/null; then
         break
     fi
     sleep 1
-    if ! kill -0 $IPROXY_PID 2>/dev/null; then
+    if ! kill -0 "$IPROXY_PID" 2>/dev/null; then
         echo "where is iproxy?"
         exit 1
     fi
-    sleep 1
-    if [[ $i -eq 10 ]]; then
+    if [[ $i -eq 20 ]]; then
         echo "iproxy hate you"
-        kill $IPROXY_PID 2>/dev/null
+        kill "$IPROXY_PID" 2>/dev/null
         exit 1
     fi
 done
