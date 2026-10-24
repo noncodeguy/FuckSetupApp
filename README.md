@@ -1,32 +1,18 @@
 # FuckSetupApp
 A shell script used to remove Setup.app on firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
-Now supports both 32-bit, 64-bit arm64 and 64-bit arm64e processors (Or should I say iPhone 3GS, iPod 3G, A4-A13 devices)
-
-From 3.0 I will not provide sshrd folders (sshrd, sshrd32, sshrd-u8) in my repository, they'll only be released in Releases
-
-此部分的README是英文，中文请下滑阅读
+From 3.0 I will not provide sshrd folders (sshrd, sshrd-u8) in my repository, they'll only be released in Releases
 
 # English
 A setup.app removal shell script, supports firmware version 6.0 - 12.4.4 / 13.0 - 13.2.3
 
-## Instruction:
+Please read the tutorial.txt in my repo to learn how to use it.
 
-1. Download the zipped file in releases section (NOT THE Source code.zip!!!)
-
-2. Open a terminal window (On Mac, open Terminal.app)
-
-3. Run this command: `` chmod -R 755 FillYourFuckSetupAppDirectoryHere ``
-
-4. cd into the directory you just downloaded
- 
-5. Run `` ./fsa ``
-
-## Caution
+## "$Me" != "A_Greedy_Man"
 
 This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the removal
 
-Windows is ### NOT ### capable of running this script, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
+I'm currently attempting to implement it on Windows, but NO ETAs. For now, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
 
 ## About the usbliter8 BootROM PoC
 Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
@@ -38,7 +24,7 @@ Initial support for usbliter8 vulnerable devices is in v2.0, however it's VERY E
 If you found any bug during extracting and booting the ramdisk, please report the issue to the repo mentioned above!
 
 ## The Principle
-Thanks for "setupapp" at bilibili for providing the principle of bypass activation, original video source at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
+Thanks for "setupapp" at bilibili for providing the principle of bypass activation, original video at (https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd), please support him if you could!
 
 1. Create device's ramdisk by using SSH ramdisk
 
@@ -64,66 +50,3 @@ A12/A13 ramdisk: github.com/Orangera1n/spironolactone
 A7-A11 ramdisk: github.com/verygenericname/SSHRD_Script
 
 32bit devices' ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
-
-使用方法：
-
-1. 从releases里下载要用的zip文件（不是Source code！）
-
-2. 打开一个终端窗口（在Mac上，打开Terminal.app）
-
-3. 运行这个命令：`` chmod -R 755 在这里输入你的FuckSetupApp路径 ``
-
-4. cd到刚解压好的文件夹内
-
-5. 运行 `` ./fsa_cn ``
-
-# 中文
-
-一只激活锁绕过shell脚本，支持系统版本6.0 - 12.4.4 / 13.0 - 13.2.3
-
-## 注意
-
-本脚本不连接任何服务器，不需要注册ECID，更不需要花钱，只需要下载到本地并运行可执行文件fsa即可完成绕过
-
-本脚本 ###不支持### Windows，仅支持macOS和Linux，你可以使用Linux Mint/Ubuntu的LiveCD来使用本脚本
-
-
-## 关于usbliter8的BootROM漏洞
-
-由于usbliter8漏洞的存在，只要可以获得A12/A13设备的ramdisk并引导，你甚至可以在A12+的设备上使用此脚本
-
-这个问题已经被开发者orangera1n解决，原仓库 https://github.com/Orangera1n/spironolactone
-
-目前2.0版本已添加对usbliter8设备的支持，但是是实验性的！且很有可能失败
-
-如果你发现了A12/A13设备提取与引导ramdisk的bug，请提交到上述的仓库！
-
-## 原理
-
-感谢setupapp大大在b站提供的绕ID思路，原视频在 https://www.bilibili.com/video/BV1NjJn6QE97/?spm_id_from=333.337.search-card.all.click&vd_source=3a81f8c290a79fce7b128695ba73b6cd，有能力的请一定去支持他！
-
-1. 使用SSH ramdisk创建设备的ramdisk
-   
-2. 进入破解DFU（pwnDFU）来引导ramdisk
-   
-3. 在ramdisk环境下挂载系统分区
-   
-4. 执行删除Setup.app命令（所以项目叫FuckSetupApp）
-   
-5. （因版本而异）删除并重新创建，或是重命名系统快照
-    
-6. （因版本而异）执行一次DFU抹除
-  
-7. 完美。
-
-## 绕后须知
-
-若是重命名系统快照，则恢复rootFS则会再次跳激活。脚本做且只做了删除并重建系统快照的指令，这样涉及到恢复rootFS操作也不会跳激活锁，更彻底。
-
-## 特别鸣谢
-
-A12/A13设备ramdisk: github.com/Orangera1n/spironolactone
-
-A7-A11设备ramdisk: github.com/verygenericname/SSHRD_Script
-
-32bit设备ramdisk: github.com/LukeZGD/Legacy-iOS-Kit
