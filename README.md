@@ -5,11 +5,11 @@ From 3.0 I will not provide sshrd folders (sshrd, sshrd-u8) in my repository, th
 
 Please read the tutorial.txt in my repo to learn how to use it.
 
+I'm currently attempting to implement it on Windows, but NO ETAs. For now, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
+
 ## "$Me" != "A_Greedy_Man"
 
 This script will neither connect to any servers, requires registering ECID nor paying mulas, The only thing you need is to download it, run the executable "fsa" to complete the removal
-
-I'm currently attempting to implement it on Windows, but NO ETAs. For now, only macOS and Linux is supported. You may use the Linux Mint/Ubuntu's LiveCD to use this script
 
 ## About the usbliter8 BootROM PoC
 Due to the existence of usbliter8, IF A12/A13 device's ramdisk is obtainable, you can even use this script on A12+ devices
