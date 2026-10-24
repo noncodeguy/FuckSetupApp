@@ -1,9 +1,6 @@
 How to use this thing
-1. Open up a terminal window (On Macs, open Terminal.app)
-   (One extra caution, if the terminal says "zsh: permission denied: .../Desktop/FuckSetupApp_v3.1/fsa" or anything like this, enter "chmod -R 755" and press space, then drag n' drop your FuckSetupApp folder in terminal window, press space)
-2. Input cd and press space, drag n' drop your FuckSetupApp folder in terminal window
-3. Press Enter, then run './fsa'
-4. Follow those guides written in the script.
+Simply download the FuckSetupApp_vX.X.X.zip in my releases, unzip it, double click the "fsa" to start the removal.
+One extra caution, if the terminal says "zsh: permission denied: .../Desktop/FuckSetupApp_v3.1/fsa" or anything like this, enter "chmod -R 755" and press space, then drag n' drop your FuckSetupApp folder in terminal window, and press Enter
 
 Q&As
 Q0: How to enter kDFU mode on A5 devices, and why can't I enter pwnDFU mode?
